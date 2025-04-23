@@ -14,12 +14,12 @@ sfr = SimpleFacerec()
 ENCODINGS_FILE = "/home/adi/Programming/AI-Attendance-System/encodings.pickle"
 
 if len(sys.argv) < 2:
-    print("No image given")
+    #print("No image given")
     sys.exit(1)
 
 # Load the saved encodings
 if not os.path.exists(ENCODINGS_FILE):
-    print(f"Encodings file '{ENCODINGS_FILE}' not found. Run 'encode_faces.py' first.")
+    #print(f"Encodings file '{ENCODINGS_FILE}' not found. Run 'encode_faces.py' first.")
     sys.exit(1)
 
 # Load the encodings data
@@ -41,10 +41,10 @@ image_cv = cv2.imread(img_path)
 face_locations, face_names = sfr.detect_known_faces(image_cv)
 
 if len(face_names) == 0:
-    print("No faces found in the uploaded image.")
+    #print("No faces found in the uploaded image.")
     sys.exit(0)
 
 # Mark attendance for recognized faces
 for name in face_names:
-    print(f"Recognized: {name}")
+    print(f"{name}")
     mark_attendance(name)

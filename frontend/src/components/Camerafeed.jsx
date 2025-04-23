@@ -6,6 +6,11 @@ const CameraFeed = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [status, setStatus] = useState('idle'); // idle, capturing, success, error
+  const [popup, setPopup] = useState({
+    show: false,
+    success: false,
+    message: ''
+  });
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const { user, isAuthenticated } = useAuth0();
@@ -79,19 +84,32 @@ const CameraFeed = () => {
         method: 'POST',
         body: formData,
       });
-
-      if (!response.ok) {
-        const errText = await response.text();
-        throw new Error(`Server responded with ${response.status}: ${errText}`);
-      }
-
       const result = await response.json();
-      console.log('Upload result:', result);
-      setStatus('success');
+
+      if (response.ok && result.success) {
+        setStatus('success');
+        setPopup({
+          show: true,
+          success: true,
+          message: result.message
+        });
+      } else {
+        setStatus('error');
+        setPopup({
+          show: true,
+          success: false,
+          message: result.message || 'Attendance failed'
+        });
+      }
     } catch (err) {
       console.error('Capture error:', err);
       setError(`Capture failed: ${err.message}`);
       setStatus('error');
+      setPopup({
+        show: true,
+        success: false,
+        message: `Error: ${err.message}`
+      });
     }
   };
 
@@ -196,6 +214,24 @@ const CameraFeed = () => {
           </div>
         </div>
       </div>
+
+      {/* Popup Modal */}
+      {popup.show && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white rounded-lg p-6 max-w-sm text-center">
+            <h3 className={`text-xl font-bold mb-4 ${popup.success ? 'text-green-600' : 'text-red-600'}`}>
+              {popup.success ? 'Success' : 'Oops'}
+            </h3>
+            <p className="mb-6">{popup.message}</p>
+            <button
+              onClick={() => setPopup(p => ({ ...p, show: false }))}
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

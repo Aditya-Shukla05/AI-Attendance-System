@@ -21,6 +21,7 @@ def mark_attendance(name):
 
         # Save back to Excel
         data.to_excel(file_path, index=False)
-        print(f"Attendance marked for {name}")
+        #print(f"Attendance marked for {name}")
     else:
-        print(f"{name} already marked present")
+        #print(f"{name} already marked present")
+        pass

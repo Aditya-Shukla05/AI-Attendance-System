@@ -48,7 +48,7 @@ class SimpleFacerec:
 
             face_distances = face_recognition.face_distance(self.known_face_encodings, face_encoding)
             best_match_index = np.argmin(face_distances)
-            if matches[best_match_index]:
+            if face_distances[best_match_index] < 0.6 and matches[best_match_index] :
                 name = self.known_face_names[best_match_index]
             face_names.append(name)
 
